@@ -8,7 +8,6 @@ app = Flask(__name__)
 
 API_TOKEN = "supersecrettoken123"
 
-# Token check decorator
 def token_required(f):
     def decorator(*args, **kwargs):
         auth_header = request.headers.get('Authorization')
@@ -20,22 +19,18 @@ def token_required(f):
     decorator.__name__ = f.__name__
     return decorator
 
-# Open test route
 @app.route('/api/hello', methods=['GET'])
 def hello():
     return jsonify({"message": "Hello, world!"})
 
-# Protected route example
 @app.route('/api/secure-data', methods=['GET'])
 @token_required
 def secure_data():
     return jsonify({"secret": "This is protected info!"})
 
-# Global geolocation tools
 geolocator = Nominatim(user_agent="capital-time-api")
 tf = TimezoneFinder()
 
-# Capital time lookup route
 @app.route('/api/time', methods=['GET'])
 @token_required
 def get_time():
@@ -66,6 +61,5 @@ def get_time():
     except Exception as e:
         return jsonify({"error": "Unexpected error", "details": str(e)}), 500
 
-# Run the app publicly
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
